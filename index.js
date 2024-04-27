@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 
 //middlewar
 app.use(cors());
-app.use(express());
+app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.i7qzqrj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -25,9 +25,24 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
+    const database = client.db('ArtDB');
+    const subcategory = database.collection('sub_category');
+    const allart = database.collection('allart');
+    app.get('/sub_category', async(req, res) =>{
+        const cursor = subcategory.find();
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+
+    app.post('/allart', async(req,res) => {
+        const newArt = req.body;
+        console.log(newArt)
+        const result = await allart.insertOne(newArt);
+        res.send(result);
+    })
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
