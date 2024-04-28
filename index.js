@@ -37,9 +37,10 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
     })
-    app.get('/artcraftcategories', async(req, res) => {
-        const cursor = artCraft.find();
-        const result = await cursor.toArray();
+    app.get("/allart/:_id", async(req, res) => {
+        const id = req.params._id;
+        const query = {_id: new ObjectId(id)};
+        const result = await allart.findOne(query);
         res.send(result);
     })
     app.get("/sub_category", async (req, res) => {
