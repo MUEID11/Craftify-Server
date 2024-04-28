@@ -31,6 +31,11 @@ async function run() {
     const database = client.db("ArtDB");
     const subcategory = database.collection("sub_category");
     const allart = database.collection("allart");
+    app.get("/allart", async(req, res) => {
+        const cursor = allart.find().limit(6);
+        const result = await cursor.toArray();
+        res.send(result);
+    })
     app.get("/sub_category", async (req, res) => {
       const cursor = subcategory.find();
       const result = await cursor.toArray();
