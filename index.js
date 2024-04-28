@@ -28,21 +28,26 @@ async function run() {
     // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
-    const database = client.db('ArtDB');
-    const subcategory = database.collection('sub_category');
-    const allart = database.collection('allart');
-    app.get('/sub_category', async(req, res) =>{
-        const cursor = subcategory.find();
-        const result = await cursor.toArray();
-        res.send(result);
-    })
+    const database = client.db("ArtDB");
+    const subcategory = database.collection("sub_category");
+    const allart = database.collection("allart");
+    app.get("/sub_category", async (req, res) => {
+      const cursor = subcategory.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
 
-    app.post('/allart', async(req,res) => {
-        const newArt = req.body;
-        console.log(newArt)
-        const result = await allart.insertOne(newArt);
-        res.send(result);
-    })
+    app.get("/mycraft/:email", async (req, res) => {
+      const email = req.params.email;
+      const result = await allart.find({email: email}).toArray();
+      res.send(result);
+    });
+    app.post("/allart", async (req, res) => {
+      const newArt = req.body;
+      console.log(newArt);
+      const result = await allart.insertOne(newArt);
+      res.send(result);
+    });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
