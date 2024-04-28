@@ -32,8 +32,13 @@ async function run() {
     const subcategory = database.collection("sub_category");
     const allart = database.collection("allart");
     const artCraft = database.collection("ArtCraftCategories");
-    app.get("/allart", async(req, res) => {
+    app.get("/allart/limited", async(req, res) => {
         const cursor = allart.find().limit(6);
+        const result = await cursor.toArray();
+        res.send(result);
+    })
+    app.get("/allart", async(req, res) => {
+        const cursor = allart.find();
         const result = await cursor.toArray();
         res.send(result);
     })
