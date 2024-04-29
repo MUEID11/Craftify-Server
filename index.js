@@ -31,32 +31,38 @@ async function run() {
     const database = client.db("ArtDB");
     const subcategory = database.collection("sub_category");
     const allart = database.collection("allart");
-    const artCraft = database.collection("ArtCraftCategories");
-    app.get("/allart/limited", async(req, res) => {
-        const cursor = allart.find().limit(6);
-        const result = await cursor.toArray();
-        res.send(result);
-    })
-    app.get("/allart", async(req, res) => {
-        const cursor = allart.find();
-        const result = await cursor.toArray();
-        res.send(result);
-    })
-    app.get("/allart/:_id", async(req, res) => {
-        const id = req.params._id;
-        const query = {_id: new ObjectId(id)};
-        const result = await allart.findOne(query);
-        res.send(result);
-    })
-    app.get("/sub_category", async (req, res) => {
-      const cursor = subcategory.find();
+
+    app.get("/allart/limited", async (req, res) => {
+      const cursor = allart.find().limit(6);
       const result = await cursor.toArray();
       res.send(result);
     });
-
+    app.get("/allart", async (req, res) => {
+      const cursor = allart.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.get("/allart/:_id", async (req, res) => {
+      const id = req.params._id;
+      const query = { _id: new ObjectId(id) };
+      const result = await allart.findOne(query);
+      res.send(result);
+    });
+    
+    app.get("/sub_category", async (req, res) => {
+      const cursor = subcategory.find();
+      const result = await cursor.toArray();
+      console.log(result);
+      res.send(result);
+    });
+    app.get('/cat/:id', async(req, res) => {
+        const {id} = req.params;
+        const result = await allart.find({subcategory: id}).toArray();
+        res.send(result)
+    })
     app.get("/mycraft/:email", async (req, res) => {
       const email = req.params.email;
-      const result = await allart.find({email: email}).toArray();
+      const result = await allart.find({ email: email }).toArray();
       res.send(result);
     });
     app.post("/allart", async (req, res) => {
