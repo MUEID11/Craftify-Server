@@ -42,24 +42,54 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-    app.get("/allart/:_id", async (req, res) => {
-      const id = req.params._id;
+    app.get("/allartcraft/:id", async (req, res) => {
+      const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await allart.findOne(query);
       res.send(result);
     });
-    
+    app.get("/update/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await allart.findOne(query);
+      res.send(result);
+    });
+
+    app.put("/updateitem/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateArt = req.body;
+      const art = {
+        $set: {
+          email: updateArt.email,
+          name: updateArt.name,
+          photo: updateArt.photo,
+          itemName: updateArt.itemName,
+          subcategory: updateArt.subcategory,
+          stockStatus: updateArt.stockStatus,
+          shortDescription: updateArt.shortDescription,
+          price: updateArt.price,
+          rating: updateArt.rating,
+          customization: updateArt.customization,
+          processingTime: updateArt.processingTime,
+        },
+      };
+      const result = await allart.updateOne(filter, art, options);
+      res.send(result);
+    });
+
     app.get("/sub_category", async (req, res) => {
       const cursor = subcategory.find();
       const result = await cursor.toArray();
-      console.log(result);
       res.send(result);
     });
-    app.get('/cat/:id', async(req, res) => {
-        const {id} = req.params;
-        const result = await allart.find({subcategory: id}).toArray();
-        res.send(result)
-    })
+    app.get("/cat/:id", async (req, res) => {
+      const { id } = req.params;
+      const result = await allart.find({ subcategory: id }).toArray();
+      res.send(result);
+    });
     app.get("/mycraft/:email", async (req, res) => {
       const email = req.params.email;
       const result = await allart.find({ email: email }).toArray();
@@ -67,10 +97,18 @@ async function run() {
     });
     app.post("/allart", async (req, res) => {
       const newArt = req.body;
-      console.log(newArt);
       const result = await allart.insertOne(newArt);
       res.send(result);
     });
+
+    app.delete("/deleteitem/:id", async (req, res) => {
+      const { id } = req.params;
+      const query = { _id: new ObjectId(id) };
+      const result = await allart.deleteOne(query);
+      res.send(result);
+      console.log(id);
+    });
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
@@ -79,11 +117,11 @@ async function run() {
     // await client.close();
   }
 }
-run().catch(console.dir);
+run().catch(console.error);
 
-app.get("/", (req, res) => {
-  res.send("app is running");
-});
+// app.get("/", (req, res) => {
+//   res.send("app is running");
+// });
 
 app.listen(port, () => {
   console.log(`your server is running on ${port}`);
