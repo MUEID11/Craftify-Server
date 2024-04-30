@@ -8,7 +8,9 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 //middlewar
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:5173", "https://b9-assignment10.firebaseapp.com", "https://b9-assignment10.web.app"]
+}));//
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.i7qzqrj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -54,9 +56,10 @@ async function run() {
       const result = await allart.findOne(query);
       res.send(result);
     });
-    app.get("/customization/:id", async (req, res) => {
+    app.get("/customization/:id/:email", async (req, res) => {
       const { id } = req.params;
-      const query = { customization: { $regex: new RegExp(`^${id}$`, "i") } };
+      const {email} = req.params;
+      const query = { customization: { $regex: new RegExp(`^${id}$`, "i") } , email: email };
       const result = await allart.find(query).toArray();
       console.log("Query result:", result);
       res.send(result);
