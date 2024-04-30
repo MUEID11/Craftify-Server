@@ -54,7 +54,13 @@ async function run() {
       const result = await allart.findOne(query);
       res.send(result);
     });
-
+    app.get("/customization/:id", async (req, res) => {
+      const { id } = req.params;
+      const query = { customization: { $regex: new RegExp(`^${id}$`, "i") } };
+      const result = await allart.find(query).toArray();
+      console.log("Query result:", result);
+      res.send(result);
+    });
     app.put("/updateitem/:id", async (req, res) => {
       const id = req.params.id;
       console.log(id);
